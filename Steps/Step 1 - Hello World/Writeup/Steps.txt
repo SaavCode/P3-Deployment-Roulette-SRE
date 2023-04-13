@@ -1,0 +1,76 @@
+Step 1: Hello World Troubleshoot
+
+1. Observed Hello world pod status with CrashLoopbackOff error.
+
+nestorsaavedra 🦊 P3-Deployment-Roulette-SRE >> kubectl get pods
+NAME                           READY   STATUS             RESTARTS      AGE
+blue-756d6cc6c9-8zghj          1/1     Running            0             9m15s
+blue-756d6cc6c9-gbwmm          1/1     Running            0             9m15s
+blue-756d6cc6c9-jpbtp          1/1     Running            0             9m15s
+canary-v1-5484598db-2jccm      1/1     Running            0             9m16s
+canary-v1-5484598db-hsn5h      1/1     Running            0             9m16s
+canary-v1-5484598db-nmm6t      1/1     Running            0             9m16s
+hello-world-567d4bfc87-5x6mj   0/1     CrashLoopBackOff   7 (23s ago)   9m19s
+
+2. Followed by checking the logs for pod hello-world-567d4bfc87-5x6mj
+
+nestorsaavedra 🦊 P3-Deployment-Roulette-SRE >> kubectl logs -f hello-world-567d4bfc87-5x6mj
+Ready to receive requests on 9000
+ * Serving Flask app 'main' (lazy loading)
+ * Environment: production
+   WARNING: This is a development server. Do not use it in a production deployment.
+   Use a production WSGI server instead.
+ * Debug mode: off
+ * Running on all addresses.
+   WARNING: This is a development server. Do not use it in a production deployment.
+ * Running on http://10.100.1.120:9000/ (Press CTRL+C to quit)
+Failed health check you want to ping /healthz
+10.100.1.118 - - [12/Apr/2023 04:36:02] "GET /nginx_status HTTP/1.1" 500 -
+Failed health check you want to ping /healthz
+10.100.1.118 - - [12/Apr/2023 04:36:04] "GET /nginx_status HTTP/1.1" 500 -
+Failed health check you want to ping /healthz
+10.100.1.118 - - [12/Apr/2023 04:36:06] "GET /nginx_status HTTP/1.1" 500 -
+
+3. Error pointed to ping ping /healthz. This is in hello.yml line 28. For this I replace /nginx_status with /healthz
+
+4. Relaunched with hello.yml
+   kubectl apply -f hello.yml
+
+5. Check pod status and logs for 
+
+nestorsaavedra 🦊 hello-world >> kubectl get pods
+NAME                          READY   STATUS    RESTARTS   AGE
+blue-756d6cc6c9-8zghj         1/1     Running   0          15m
+blue-756d6cc6c9-gbwmm         1/1     Running   0          15m
+blue-756d6cc6c9-jpbtp         1/1     Running   0          15m
+canary-v1-5484598db-2jccm     1/1     Running   0          15m
+canary-v1-5484598db-hsn5h     1/1     Running   0          15m
+canary-v1-5484598db-nmm6t     1/1     Running   0          15m
+hello-world-bd9cf44f8-dfrkg   1/1     Running   0          95s
+
+
+nestorsaavedra 🦊 hello-world >> kubectl logs -f hello-world-bd9cf44f8-dfrkg
+Ready to receive requests on 9000
+ * Serving Flask app 'main' (lazy loading)
+ * Environment: production
+   WARNING: This is a development server. Do not use it in a production deployment.
+   Use a production WSGI server instead.
+ * Debug mode: off
+ * Running on all addresses.
+   WARNING: This is a development server. Do not use it in a production deployment.
+ * Running on http://10.100.2.28:9000/ (Press CTRL+C to quit)
+Healthy!
+10.100.2.21 - - [12/Apr/2023 04:45:05] "GET /healthz HTTP/1.1" 200 -
+Healthy!
+10.100.2.21 - - [12/Apr/2023 04:45:07] "GET /healthz HTTP/1.1" 200 -
+Healthy!
+10.100.2.21 - - [12/Apr/2023 04:45:09] "GET /healthz HTTP/1.1" 200 -
+Healthy!
+10.100.2.21 - - [12/Apr/2023 04:45:11] "GET /healthz HTTP/1.1" 200 -
+Healthy!
+10.100.2.21 - - [12/Apr/2023 04:45:13] "GET /healthz HTTP/1.1" 200 -
+
+reference:
+
+Ref: Kubernetes CrashLoopBackOff Error: What It Is and How to Fix It
+https://spacelift.io/blog/crashloopbackoff

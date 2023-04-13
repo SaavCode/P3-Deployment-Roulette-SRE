@@ -1,0 +1,19 @@
+1. Verify that only pods from the blue deployment are running in the cluster. This step is necessary to ensure that there is no overlap with the green deployment during the blue-green deployment process. Any green pods that may be running in the cluster could cause conflicts with the blue environment and result in unexpected behavior.
+
+2. Create a green service profile in Terraform called "green.yml" and add another DNS CNAME record resource for the green deployment in the "dns.tf" file. Set the weight for the green deployment to 50% to evenly distribute traffic between the blue and green environments. This step is important for setting up the green deployment in the Terraform infrastructure and updating the DNS records to enable traffic routing between the blue and green environments.
+
+3. Launch the "blue-green.sh" script to initiate the deployment of the green environment alongside the existing blue environment. This step is the actual deployment of the green environment and ensures that the deployment process is automated and streamlined.
+
+4. Deploy the Terraform infrastructure again using the "terraform apply" command to ensure that the infrastructure is up-to-date with the latest changes. This step ensures that the Terraform infrastructure is updated and any changes made to the infrastructure are propagated and applied correctly.
+
+5. Check that the blue and greenenvironments have been deployed correctly. This step involves verifying that both the blue and green environments are functioning correctly and that the infrastructure is running as expected. This ensures that the blue-green deployment process was successful and that the new green environment is fully operational and ready to receive traffic.
+
+6. Check in Route 53 that there are two CNAME records for blue and green. This step involves checking that the DNS records for blue and green have been updated correctly and that traffic can be routed between the blue and green environments.
+
+7. Check that the two load balancers have been created for the blue and green deployment. This step ensures that the load balancers have been correctly set up to handle traffic between the blue and green environments and that both environments are balanced evenly.
+
+8. Use the "curl" command in the "curl-instance" to test the blue-green.udacityproject endpoint and verify that traffic is being distributed evenly between the blue and green environments. This step is important for verifying that the blue-green deployment process was successful and that traffic is being routed correctly between the blue and green environments.
+
+9. Remove the CNAME record for the blue deployments in Route 53. This step ensures that traffic is no longer routed to the blue environment and that all traffic is directed to the new green environment.
+
+10. Use the "curl" command in the "curl-instance" to test the blue-green.udacityproject endpoint and verify that traffic is now only being directed to the green environment. This step ensures that the blue-green deployment process was successful and that traffic is now only being routed to the new green environment.

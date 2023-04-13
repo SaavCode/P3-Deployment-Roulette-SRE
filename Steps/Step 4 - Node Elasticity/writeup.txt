@@ -1,0 +1,63 @@
+Node Elasticity
+
+1. After deploying the bloaty-mcbloatface deployment, some of the pods were in a Pending state.
+nestorsaavedra 🦊 bloatware >>  kubectl get pods --all-namespaces
+NAMESPACE     NAME                                  READY   STATUS              RESTARTS   AGE
+kube-system   aws-node-9gjvr                        1/1     Running             0          10m
+kube-system   aws-node-q4zfn                        1/1     Running             0          9m54s
+kube-system   coredns-f47955f89-4z2lb               1/1     Running             0          14m
+kube-system   coredns-f47955f89-c6h88               1/1     Running             0          14m
+kube-system   kube-proxy-n6l76                      1/1     Running             0          10m
+kube-system   kube-proxy-zf7nq                      1/1     Running             0          9m54s
+udacity       bloaty-mcbloatface-58c98b98d8-6bq9r   0/1     Pending             0          8s
+udacity       bloaty-mcbloatface-58c98b98d8-6gh6s   1/1     Running             0          8s
+udacity       bloaty-mcbloatface-58c98b98d8-7c4l4   1/1     Running             0          9s
+udacity       bloaty-mcbloatface-58c98b98d8-7fdjk   1/1     Running             0          8s
+udacity       bloaty-mcbloatface-58c98b98d8-9rzf9   0/1     Pending             0          8s
+udacity       bloaty-mcbloatface-58c98b98d8-bhdlb   1/1     Running             0          9s
+udacity       bloaty-mcbloatface-58c98b98d8-cbl29   1/1     Running             0          9s
+udacity       bloaty-mcbloatface-58c98b98d8-dh22v   1/1     Running             0          8s
+udacity       bloaty-mcbloatface-58c98b98d8-fzxg2   1/1     Running             0          9s
+udacity       bloaty-mcbloatface-58c98b98d8-gr48s   0/1     ContainerCreating   0          8s
+udacity       bloaty-mcbloatface-58c98b98d8-j7twd   1/1     Running             0          9s
+udacity       bloaty-mcbloatface-58c98b98d8-j9jmh   0/1     Pending             0          8s
+udacity       bloaty-mcbloatface-58c98b98d8-l2852   1/1     Running             0          8s
+udacity       bloaty-mcbloatface-58c98b98d8-l2qv9   1/1     Running             0          9s
+udacity       bloaty-mcbloatface-58c98b98d8-ncppc   0/1     Pending             0          8s
+udacity       bloaty-mcbloatface-58c98b98d8-tz7qj   0/1     Pending             0          8s
+udacity       bloaty-mcbloatface-58c98b98d8-wvlkb   1/1     Running             0          9s
+
+2. Upon describing one of the pods in Pending state, it was determined that the issue was related to a lack of available resources, and that additional VMs would need to be deployed.
+
+Events:
+  Type     Reason            Age                  From               Message
+  ----     ------            ----                 ----               -------
+  Warning  FailedScheduling  11s (x5 over 3m18s)  default-scheduler  0/2 nodes are available: 2 Insufficient cpu.
+
+
+3. It was decided that the most cost-effective option was to scale out (i.e. increase the number of nodes) rather than increase the size of the nodes.
+4. To enable node autoscaling, an autoscaling group was created using the cluster_autoscale.yml file, which was added to the bloatware directory.
+5. In the console, the number of EC2 instances was verified to be two, and the size of the autoscaling group was noted before making any changes.
+6. To fix the failure I increased the size of the autoscaling group, the nodes_max_size was changed to 8 and the nodes_min_size was changed to 1.
+7. The infrastructure was updated using terraform apply.
+8. The cluster-autoscale was deployed.
+9. It was observed that all 16 bloaty-mcbloatface pods were in a Running state.
+
+udacity       bloaty-mcbloatface-7d7b64c65d-8hzfh   1/1     Running   0          8h
+udacity       bloaty-mcbloatface-7d7b64c65d-9dvnm   1/1     Running   0          8h
+udacity       bloaty-mcbloatface-7d7b64c65d-cmxzg   1/1     Running   0          8h
+udacity       bloaty-mcbloatface-7d7b64c65d-f2v5l   1/1     Running   0          8h
+udacity       bloaty-mcbloatface-7d7b64c65d-f88xv   1/1     Running   0          8h
+udacity       bloaty-mcbloatface-7d7b64c65d-k6lgf   1/1     Running   0          8h
+udacity       bloaty-mcbloatface-7d7b64c65d-lv8kg   1/1     Running   0          8h
+udacity       bloaty-mcbloatface-7d7b64c65d-nkkcg   1/1     Running   0          8h
+udacity       bloaty-mcbloatface-7d7b64c65d-p5cw2   1/1     Running   0          8h
+udacity       bloaty-mcbloatface-7d7b64c65d-p9mgs   1/1     Running   0          8h
+udacity       bloaty-mcbloatface-7d7b64c65d-ql7xl   1/1     Running   0          8h
+udacity       bloaty-mcbloatface-7d7b64c65d-th8bv   1/1     Running   0          8h
+udacity       bloaty-mcbloatface-7d7b64c65d-vrpbh   1/1     Running   0          8h
+udacity       bloaty-mcbloatface-7d7b64c65d-wwmjm   1/1     Running   0          8h
+udacity       bloaty-mcbloatface-7d7b64c65d-zghbh   1/1     Running   0          8h
+udacity       bloaty-mcbloatface-7d7b64c65d-zvpz7   1/1     Running   0          8h
+udacity       bloaty-mcbloatface-7d7b64c65d-zw85p   1/1     Running   0          8h 
+

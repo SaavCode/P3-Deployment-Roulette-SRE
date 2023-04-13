@@ -1,0 +1,41 @@
+Upon analysis, it has been observed that the canary application was deployed without any associated service. The relevant service can be found in the canary-svc.yml file. 
+To rectify this issue, the following steps were taken:
+
+1. The line 9 in the canary-svc.yml file was deleted since the service was previously targeted only to version 1.0.
+
+2. A canary.sh script was created to facilitate canary deployment from version 1 to version 2.
+
+3. The canary service was launched and the canary_deploy script was executed.
+
+4. Subsequently, a thorough inspection of the canary deployment was carried out, revealing 10 pods with version 2 and one pod with version 1.
+
+<html>
+<h1>This is version 2</h1>
+</html>
+<html>
+<h1>This is version 2</h1>
+</html>
+<html>
+<h1>This is version 2</h1>
+</html>
+<html>
+<h1>This is version 1</h1>
+</html>
+<html>
+<h1>This is version 2</h1>
+</html>
+<html>
+<h1>This is version 2</h1>
+</html>
+<html>
+<h1>This is version 2</h1>
+</html>
+<html>
+<h1>This is version 1</h1>
+</html>
+<html>
+<h1>This is version 2</h1>
+</html>
+<html>
+<h1>This is version 2</h1>
+</html>
